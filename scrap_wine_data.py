@@ -15,9 +15,14 @@ def get_arguments():
 
     parser = argparse.ArgumentParser(usage='Scraps all wine data from Vivino.')
 
-    parser.add_argument('output_file', help='Output .json file', type=str)
+    parser.add_argument('-r', '--region_id', help='Region id', type=str)
 
-    parser.add_argument('-start_page', help='Starting page identifier', type=int, default=1)
+    parser.add_argument('-m', '--min_rating', default=3.8, type=str, help='Wine minimum rating')
+
+    parser.add_argument('output_file', default='output.json', help='Output .json file', type=str)
+
+    parser.add_argument(
+        '-s', '--start_page', help='Starting page identifier', type=int, default=1)
 
     return parser.parse_args()
 
@@ -25,6 +30,8 @@ def get_arguments():
 if __name__ == '__main__':
     # Gathers the input arguments and its variables
     args = get_arguments()
+    region_id = args.region_id
+    min_rating = args.min_rating
     output_file = args.output_file
     start_page = args.start_page
 
@@ -33,16 +40,16 @@ if __name__ == '__main__':
 
     # Defines the payload, i.e., filters to be used on the search
     payload = {
-        "country_codes[]": "br",
+        "country_codes[]": "au",
         # "food_ids[]": 20,
         # "grape_ids[]": 3,
         # "grape_filter": "varietal",
-        "min_rating": 3.7,
+        "min_rating": min_rating,
         # "order_by": "ratings_average",
         # "order": "desc",
         # "price_range_min": 25,
         # "price_range_max": 100,
-        # "region_ids[]": 383,
+        "region_ids[]": region_id,
         # "wine_style_ids[]": 98,
         # "wine_type_ids[]": 1,
         # "wine_type_ids[]": 2,
@@ -63,6 +70,7 @@ if __name__ == '__main__':
         # Creates a dictionary to hold the data
         data = {}
         data['wines'] = []
+        data['vintages'] = []
 
         # Adds the page to the payload
         payload['page'] = i
@@ -76,18 +84,21 @@ if __name__ == '__main__':
         # Iterates over every match
         for match in matches:
             # Gathers the wine-based data
-            wine = match['vintage']['wine']
+
+            vintage = match['vintage']
+            wine = vintage['wine']
 
             # Popping redundant values
             if wine['style']:
                 wine['style'].pop('country', None)
                 wine['style'].pop('region', None)
-                wine['style'].pop('grapes', None)
+                # wine['style'].pop('grapes', None)
 
             print(f'Scraping data from wine: {wine["name"]}')
 
             # Appends current match to the dictionary
             data['wines'].append(wine)
+            data['vintages'].append(vintage)
 
             # Gathers the full-taste profile from current match
             res = r.get(f'wines/{wine["id"]}/tastes')
@@ -100,6 +111,6 @@ if __name__ == '__main__':
         with open(f'{i}_{output_file}', 'w') as f:
             # Dumps the data
             json.dump(data, f)
-        
+
         # Closes the file
         f.close()
