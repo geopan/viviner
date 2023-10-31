@@ -16,13 +16,11 @@ def get_arguments():
     parser = argparse.ArgumentParser(usage='Scraps all wine data from Vivino.')
 
     parser.add_argument('-r', '--region_id', help='Region id', type=str)
-
     parser.add_argument('-m', '--min_rating', default=3.8, type=str, help='Wine minimum rating')
-
+    parser.add_argument('--min_price', default=25, type=str, help='Min price')
+    parser.add_argument('--max_price', default=500, type=str, help='Max price')
+    parser.add_argument('-s', '--start_page', help='Starting page identifier', type=int, default=1)
     parser.add_argument('output_file', default='output.json', help='Output .json file', type=str)
-
-    parser.add_argument(
-        '-s', '--start_page', help='Starting page identifier', type=int, default=1)
 
     return parser.parse_args()
 
@@ -32,6 +30,8 @@ if __name__ == '__main__':
     args = get_arguments()
     region_id = args.region_id
     min_rating = args.min_rating
+    min_price = args.min_price
+    max_price = args.max_price
     output_file = args.output_file
     start_page = args.start_page
 
@@ -47,8 +47,8 @@ if __name__ == '__main__':
         "min_rating": min_rating,
         # "order_by": "ratings_average",
         # "order": "desc",
-        # "price_range_min": 25,
-        # "price_range_max": 100,
+        "price_range_min": min_price,
+        "price_range_max": max_price,
         "region_ids[]": region_id,
         # "wine_style_ids[]": 98,
         # "wine_type_ids[]": 1,
@@ -64,6 +64,13 @@ if __name__ == '__main__':
     n_matches = res.json()['explore_vintage']['records_matched']
 
     print(f'Number of matches: {n_matches}')
+
+    # print(first['vintage'].keys())
+    # dict_keys(['id', 'seo_name', 'name', 'statistics', 'image', 'wine', 'year', 'grapes', 'has_valid_ratings'])
+
+    # print(first['vintage']['wine'].keys())
+    # dict_keys(['id', 'name', 'seo_name', 'type_id', 'vintage_type', 'is_natural', 'region', 'winery', 'taste', 'statistics', 'style', 'has_valid_ratings'])
+
 
     # Iterates through the amount of possible pages
     for i in range(start_page, max(1, int(n_matches / c.RECORDS_PER_PAGE)) + 1):
