@@ -69,8 +69,7 @@ if __name__ == '__main__':
 
     if args.import_grapes:
         grapes_bridge = data_bridges.GrapesDataBridge(conn)
-        grapes_bridge.fetch_grapes()
-        grapes_bridge.insert_grapes()
+        grapes_bridge.import_grapes()
         grapes_bridge.commit()
 
         print(f'{len(grapes_bridge.grapes)} grapes imported in database')
