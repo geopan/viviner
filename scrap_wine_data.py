@@ -41,6 +41,7 @@ if __name__ == '__main__':
     # Defines the payload, i.e., filters to be used on the search
     payload = {
         "country_codes[]": "au",
+        "currency_code":"AUD",
         # "food_ids[]": 20,
         # "grape_ids[]": 3,
         # "grape_filter": "varietal",
