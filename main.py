@@ -37,6 +37,8 @@ def get_arguments():
         '--import_regions', help='Instruct program to also import regions', action='store_true')
     parser.add_argument(
         '--import_wineries', help='Instruct program to also import wineries', action='store_true')
+    parser.add_argument(
+        '--import_wines', help='Instruct program to also import wines', action='store_true')
 
     return parser.parse_args()
 
@@ -85,6 +87,11 @@ if __name__ == '__main__':
         wineries_bridge = data_bridges.WineriesDataBridge(conn)
         wineries_bridge.import_wineries()
         wineries_bridge.commit()
+
+    if args.import_wines:
+        wines_bridge = data_bridges.WinesDataBridge(conn)
+        wines_bridge.import_wines()
+        wines_bridge.commit()
 
     # print(len(grapes))
     # print(len(regions))

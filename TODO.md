@@ -3,7 +3,7 @@
   - [ ] lvl deeper with description
 - [x] regions
 - [x] wineries
-- [ ] wines
+- [x] wines
 - [ ] vintages
 
 

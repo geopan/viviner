@@ -115,6 +115,6 @@ class WineriesDataBridge(DataBridge):
         self.load_wineries_ids()
 
         # tqdm is just for a little progress bar
-        for winery_id in tqdm(self.wineries_ids[1144:]):
+        for winery_id in tqdm(self.wineries_ids):
             winery = self.fetch_winerie_by_id(winery_id)
             self.insert_winery(winery)
